@@ -104,7 +104,7 @@
         - When to use this feature:
           - This is most effective if you want to study the execution time of a particular function.
 
-- Use [line_profiler](https://github.com/pyutils/line_profiler) to find the execution line by line
+- Use [line_profiler](https://github.com/pyutils/line_profiler) to find the execution time for each line
 
   - Installation
 
