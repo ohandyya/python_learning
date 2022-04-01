@@ -1,6 +1,6 @@
 # Python Profiling
 
-## Speed
+## Execution time
 
 ### Good reading resources
 
@@ -8,6 +8,7 @@
 
 ### Code
 
+- [Time a single function](time_a_single_function.ipynb)
 
 ## Memory usage
 
