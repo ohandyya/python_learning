@@ -155,10 +155,63 @@
 
     - In practice, it is most effective to optimize the line that takes the most time.
 
-
 ## Memory usage
 
 ### How do
 
 - Use [memory-profiler](https://pypi.org/project/memory-profiler/)
-  - TBD
+
+  - Installation
+
+    ```bash
+    pip install memory-profiler
+    ```
+
+  - Line-by-line memory usage of a function
+
+    ```bash
+    (p38) atseng@ATLMBP725 profiling % python -m memory_profiler my_code_memory_profiler.py
+    2022-04-01 11:03:26,844:INFO:__main__:Start running func 1
+    2022-04-01 11:03:28,170:INFO:__main__:Start running func 2
+    2022-04-01 11:03:29,172:INFO:__main__:Start func 3
+    2022-04-01 11:03:33,177:INFO:__main__:Finish
+    Filename: my_code_memory_profiler.py
+
+    Line #    Mem usage    Increment  Occurrences   Line Contents
+    =============================================================
+        14   82.465 MiB   82.465 MiB           1   @profile
+        15                                         def func1():
+        16  235.094 MiB  152.629 MiB           1       x = np.random.randn(2 * 10 ** 7)
+        17  281.051 MiB   23.059 MiB           2       y = pd.DataFrame(
+        18  257.992 MiB    0.000 MiB           1           {
+        19  242.727 MiB    7.633 MiB           1               'a': np.random.randn(1000000),
+        20  250.359 MiB    7.633 MiB           1               'b': np.random.randn(1000000),
+        21  257.992 MiB    7.633 MiB           1               'c': np.random.randn(1000000),
+        22                                                 }
+        23                                             )
+        24  281.051 MiB    0.000 MiB           1       time.sleep(0.5)
+        25  281.051 MiB    0.000 MiB           1       del x
+        26  281.051 MiB    0.000 MiB           1       time.sleep(0.1)
+        27  281.051 MiB    0.000 MiB           1       return y
+    ```
+
+    - The first column represents the line number of the code that has been profiled
+
+    - The second column (Mem usage) the memory usage of the Python interpreter after that line has been executed.
+
+    - The third column (Increment) represents the difference in memory of the current line with respect to the last one.
+
+    - The last column (Line Contents) prints the code that has been profiled.
+
+- Time-based memory usage
+
+  ```bash
+  mprof run my_code_memory_profiler_time.py
+  mprof plot mprofile_20220401111705.dat
+  ```
+
+  ![alt text](my_code_memory_profiler_time.png)
+
+    - From the memory consumption above, we can see that memory is not getting reduced over time, which is rather strange.
+
+    - Moreover, we can see that memory has the highest jump when we call func 1 the first time (the memory is increased by 200 MB, which is inline with the line-by-line memory profiller). However, for any subsequent call of func1 the memory just increase by only 30 - 50 MB. As for `why`, I have no idea. However, a possible explanation is Python did collect the garbage, hence the memory did not reduce after leaving the function.
